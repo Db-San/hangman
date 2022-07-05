@@ -43,11 +43,11 @@ def load_words():
 def display_title_bar():
         # Clears the terminal screen, and displays a title bar.
         os.system('clear')
-        print("*******************************************")
-        print("*** Hangman - Words stored: %s\t\t***" % len(words))
-        print("*******************************************")
-        print("*** Lives Left: %d\t\t\t***" % lives)
-        print("*******************************************")
+        print("**********************************")
+        print("*** Hangman - Words stored: %s" % len(words))
+        print("**********************************")
+        print("*** Lives Left: %d" % lives)
+        print("**********************************")
 
 def get_user_choice():
     user_guess = input("Guess [a-z, Q]: ")
@@ -129,4 +129,4 @@ while choice != "Q":
         continue
     elif wrong and got_user_input:
         lives -= 1
-        wrong_guesses.append(choice)
+        wrong_guesses.append(choice)    

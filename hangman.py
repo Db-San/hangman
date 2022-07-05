@@ -4,7 +4,6 @@ import random
 
 # Python 3.8.10
 # A CLI Hangman app
-# Bonus: Make the CLI app pretty
 
 # This can be changed.
 default_wordlist = [ 

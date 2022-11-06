@@ -1,5 +1,5 @@
 # hangman
-Play hangman right from the terminal!
+Play hangman straight in your terminal!
 
 # Requirements
 - Python 3.x

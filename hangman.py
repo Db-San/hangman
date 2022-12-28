@@ -2,10 +2,10 @@ import os
 import pickle
 import random
 
-# Python 3.8.10
-# A CLI Hangman app
+# python 3.8.10
+# a cli hangman app
 
-# Wordlist for the game. Can be modified
+# add/remove words from wordlist
 default_wordlist = [ 
     "banana", "fish", "skyscraper",
     "book", "glasses", "pencil", 
@@ -14,24 +14,25 @@ default_wordlist = [
 ]
 
 def create_wordlist():
-    # This function creates a file and dumps the list 'default_wordlist'
-    #  into it
+    # This function creates a file and 
+    # dumps the list 'default_wordlist'
+    # to it the file and closes it
     file_object = open('wordlist.pydata', 'wb')
     pickle.dump(default_wordlist, file_object)
     file_object.close()
 
 def open_wordlist():
-    # This fnction loads words from a file and returns it
+    # This function loads words from a file and 
+    # returns it
     file_object = open('wordlist.pydata', 'rb')
     words = pickle.load(file_object)
     file_object.close()
     return words
 
 def load_words():
-    # This function loads words from a file for the game to choose from.
-    #  It then puts them in the list 'words'. If the file doesn't exist, 
-    #  it creates the file and dumps the list 'default_wordlist'
-    #  into the file.
+    # Try to store loaded words into the list, 'words'.
+    # If the file doesn't exist, it creates a new file
+    # and dumps the list 'default_wordlist' instead
     try: 
         words = open_wordlist()
         return words
@@ -41,30 +42,33 @@ def load_words():
         return words
 
 def display_title_bar():
-        # Clears the terminal screen, and displays a title bar.
+        # Clear the terminal screen, and display a title bar
         os.system('clear')
-        print("**********************************")
-        print("*** Hangman - Words stored: %s" % len(words))
-        print("**********************************")
-        print("*** Lives Left: %d" % lives)
-        print("**********************************")
+        print("----------------------------------")
+        print("--- Hangman - Words stored: %s" % len(words))
+        print("----------------------------------")
+        print("--- Lives Left: %d" % lives)
+        print("----------------------------------")
 
 def get_user_choice():
     user_guess = input("Guess [a-z, Q]: ")
+    if user_guess != "Q":
+        user_guess = user_guess.lower()
     return user_guess
 
 def quit():
-    print("Thanks for playing, bye.")
+    print("\nThe word was %s." % random_word)
+    print("Thanks for playing, bye-bye!")
     choice = "Q"
     return choice
 
-# Main app
+# End of functions
 # Initialize variables
-words = load_words()
 
-# Check for any changes in the list 'default_wordlist'. If the list was
-#  modifed, it will overwrite the old wordlist file and replace it with the
-#  modified list
+# Check for any modifcations to 'default_wordlist'.
+# If the list was modifed, overwrite 
+# old wordlist and replace it
+words = load_words()
 if len(words) != len(default_wordlist):
     create_wordlist()
     words = load_words()
@@ -77,17 +81,10 @@ random_letters = list(random_word)
 display_word = [0] * len(random_letters)
 got_user_input = False
 
-# Start the game
+# Main program
 display_title_bar()
 while choice != "Q":
     display_title_bar()
-
-    # Check if the user has enough lives to continue
-    if lives == 0:
-        print("\nNo lives left! Game Over!")
-        print("The word was %s." % random_word)
-        choice = quit()
-        break
 
     # Display wrong guesses made by the user
     print("Wrong guesses: ", end="")
@@ -95,7 +92,11 @@ while choice != "Q":
         print("%s, " % wrong_guess, end="")
     print("")
 
-    # Check if the user guess is correct
+    if lives == 0:
+        choice = quit()
+        break
+
+    # Check for correct user input/guess
     skip = True
     for index, letter in enumerate(random_letters):       
         correct_guess = choice in random_letters
@@ -110,7 +111,7 @@ while choice != "Q":
         else:
             print("_ ", end="")
 
-    # Check if the user has guessed the word
+    # Test if user has fully guessed the word
     player_win = 0 in display_word
     if player_win is False:
         print("\n\nYou win!")
@@ -121,12 +122,17 @@ while choice != "Q":
     # Get user input
     choice = (get_user_choice())
     got_user_input = True
-
-    # Check if user input is wrong, then reduce lives accordingly
+    
+    # Terminate app mid-game
+    if choice == "Q":
+            quit()
+            
+    # Reduce lives for incorrect user input
     wrong = choice not in random_letters
     deducted = choice in wrong_guesses
     if deducted:
         continue
     elif wrong and got_user_input:
+
         lives -= 1
         wrong_guesses.append(choice)    
